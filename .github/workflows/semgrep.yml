@@ -30,21 +30,30 @@ jobs:
       - name: Run Semgrep Scans p/ci
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
-        run: |
-          semgrep --config p/ci 
+        run: semgrep --config p/ci --json > semgrep-ci-results.json
 
       - name: Save Semgrep Scans p/secrets
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
-        run: semgrep --config p/secrets
+        run: semgrep --config p/secrets --json > semgrep-secrets-results.json
 
       - name: Save Semgrep Scans p/security-audit
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
-        run: semgrep --config p/security-audit
+        run: semgrep --config p/security-audit --json > semgrep-security-audit-results.json
 
       - name: Save Semgrep Scans p/docker
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
-        run: semgrep --config p/docker
+        run: semgrep --config p/docker --json > semgrep-docker-results.json
 
+      # Step 4: Upload the results as artifacts
+      - name: Upload Semgrep results as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Semgrep-Scan
+          path: |
+            semgrep-ci-results.json
+            semgrep-secrets-results.json
+            semgrep-security-audit-results.json
+            semgrep-docker-results.json
