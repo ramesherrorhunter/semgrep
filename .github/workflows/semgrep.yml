@@ -2,11 +2,9 @@ name: Semgrep Scan
 
 on:
   workflow_call:
-    inputs:
+    secrets:
       SEMGREP_API_TOKEN:
-        description: 'Semgrep API Token'
         required: true
-        type: string
   pull_request:
     branches:
       - main
