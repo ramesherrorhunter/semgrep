@@ -33,17 +33,26 @@ jobs:
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
         run: |
-          semgrep --config p/ci --config p/secrets --config p/audit --config p/security --config p/docker
+          semgrep --config p/ci 
 
       # Optional: Save the scan results as JSON for further processing
       - name: Save Semgrep results
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
-        run: semgrep --config p/ci --config p/secrets --config p/audit --config p/security --config p/docker --json > semgrep-report.json
+        run: semgrep --config p/secrets
 
-      # Optional: Upload Semgrep results as artifacts
-      - name: Upload Semgrep results
-        uses: actions/upload-artifact@v3
-        with:
-          name: semgrep-report
-          path: semgrep-report.json
+      - name: Save Semgrep results
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
+        run: semgrep --config p/audit
+
+      - name: Save Semgrep results
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
+        run: semgrep --config p/security
+
+      - name: Save Semgrep results
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
+        run: semgrep --config p/docker
+
