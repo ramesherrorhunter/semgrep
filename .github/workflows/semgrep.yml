@@ -1,0 +1,49 @@
+name: Semgrep Scan
+
+on:
+  workflow_call:
+    inputs:
+      SEMGREP_API_TOKEN:
+        description: 'Semgrep API Token'
+        required: true
+        type: string
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  semgrep:
+    name: Run Semgrep
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Install Semgrep
+      - name: Install Semgrep
+        run: pip install semgrep
+
+      # Step 3: Run Semgrep with multiple configurations
+      - name: Run Semgrep Scans
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
+        run: |
+          semgrep --config p/ci --config p/secrets --config p/audit --config p/security --config p/docker
+
+      # Optional: Save the scan results as JSON for further processing
+      - name: Save Semgrep results
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
+        run: semgrep --config p/ci --config p/secrets --config p/audit --config p/security --config p/docker --json > semgrep-report.json
+
+      # Optional: Upload Semgrep results as artifacts
+      - name: Upload Semgrep results
+        uses: actions/upload-artifact@v3
+        with:
+          name: semgrep-report
+          path: semgrep-report.json
