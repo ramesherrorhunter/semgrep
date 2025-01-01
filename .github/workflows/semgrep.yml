@@ -29,29 +29,23 @@ jobs:
         run: pip install semgrep
 
       # Step 3: Run Semgrep with multiple configurations
-      - name: Run Semgrep Scans
+      - name: Run Semgrep Scans p/ci
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
         run: |
           semgrep --config p/ci 
 
-      # Optional: Save the scan results as JSON for further processing
-      - name: Save Semgrep results
+      - name: Save Semgrep Scans p/secrets
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
         run: semgrep --config p/secrets
 
-      - name: Save Semgrep results
+      - name: Save Semgrep Scans p/security-audit
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
-        run: semgrep --config p/audit
+        run: semgrep --config p/security-audit
 
-      - name: Save Semgrep results
-        env:
-          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
-        run: semgrep --config p/security
-
-      - name: Save Semgrep results
+      - name: Save Semgrep Scans p/docker
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_API_TOKEN }}
         run: semgrep --config p/docker
